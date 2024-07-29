@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "motion_detection",
+    "camera_capture"
+]

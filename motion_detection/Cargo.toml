@@ -1,0 +1,13 @@
+[package]
+name = "motion_detection"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rppal = "0.18.0"
+tokio = {version="1.39.2",features = ["full"]}
+tokio-util = "0.7.11"
+
+
+
+
