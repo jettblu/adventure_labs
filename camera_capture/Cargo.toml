@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+libcamera = "0.2.3"
+drm-fourcc = "2.2"
+image = "0.24.7"

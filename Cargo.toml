@@ -2,5 +2,6 @@
 
 members = [
     "motion_detection",
-    "camera_capture"
+    "camera_capture",
+    "smart_cam"
 ]
