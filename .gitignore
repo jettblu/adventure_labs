@@ -1,2 +1,6 @@
 /target
 smart_cam_test_output
+logs/*
+!logs/README.md
+bin/*
+!bin/README.md
