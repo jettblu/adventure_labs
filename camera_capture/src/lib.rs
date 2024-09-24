@@ -102,16 +102,17 @@ pub fn save_photo_to_file(filename: &str) {
 
     // RGB data is interleaved as a single plane.
     let planes = framebuffer.data();
-    let rgb_plane = match planes.get(0) {
+    let image_plane = match planes.get(0) {
         Some(plane) => plane,
         None => {
             eprintln!("RGB data is not available");
             return;
         }
     };
-
+    let mut rgb_vec = image_plane.to_vec();
+    swap_channels(&mut rgb_vec);
     // Create an ImageBuffer from the raw RGB data
-    let img: RgbImage = ImageBuffer::from_raw(size.width, size.height, rgb_plane.to_vec()).expect(
+    let img: RgbImage = ImageBuffer::from_raw(size.width, size.height, rgb_vec).expect(
         "Unable to form the image buffer"
     );
 
@@ -121,4 +122,14 @@ pub fn save_photo_to_file(filename: &str) {
     println!("PNG file saved to {}", &filename);
 
     // Everything is cleaned up automatically by Drop implementations.
+}
+
+// function that swaps channels of rgb image
+fn swap_channels(img: &mut Vec<u8>) {
+    for i in 0..img.len() / 3 {
+        let r = img[i * 3];
+        let b = img[i * 3 + 2];
+        img[i * 3] = b;
+        img[i * 3 + 2] = r;
+    }
 }
