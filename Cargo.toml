@@ -3,5 +3,13 @@
 members = [
     "motion_detection",
     "camera_capture",
-    "smart_cam"
+    "smart_cam",
+    "battery",
+    "radio"
 ]
+
+[workspace.dependencies]
+log = "0.4.22"
+simple-logging = "2.0.2"
+tokio = {version="1.39.2",features = ["full"]}
+tokio-util = "0.7.11"

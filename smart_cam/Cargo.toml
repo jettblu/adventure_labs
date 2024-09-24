@@ -6,5 +6,7 @@ edition = "2021"
 [dependencies]
 camera_capture={path="../camera_capture"}
 motion_detection={path="../motion_detection"}
-tokio = {version="1.39.2",features = ["full"]}
-tokio-util = "0.7.11"
+tokio = {workspace=true}
+tokio-util = {workspace=true}
+# use workspace version of log
+log = {workspace=true}

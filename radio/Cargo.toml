@@ -1,0 +1,7 @@
+[package]
+name = "radio"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+meshtastic="0.1.6"
