@@ -1,0 +1,14 @@
+[Unit]
+Description=cam-health
+
+[Service]
+ExecStart=/usr/bin/rugged_cam/cam-health
+
+Type=simple
+KillMode=process
+Restart=on-failure
+RestartSec=10s
+WorkingDirectory=/etc/rugged_cam
+
+[Install]
+WantedBy=multi-user.target
