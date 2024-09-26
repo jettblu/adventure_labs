@@ -1,6 +1,6 @@
 /target
 smart_cam_test_output
-logs/*
-!logs/README.md
+logs/health/*
+!logs/health/README.md
 bin/*
 !bin/README.md

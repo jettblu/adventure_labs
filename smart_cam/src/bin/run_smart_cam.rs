@@ -7,8 +7,8 @@ use log::{ info, trace, warn, LevelFilter };
 
 #[tokio::main]
 async fn main() {
-    simple_logging::log_to_file("test.log", LevelFilter::Info);
-    info!("Smafrt cam program started");
+    simple_logging::log_to_file("logs/smart_cam/test.log", LevelFilter::Info);
+    info!("Smart cam program started");
     let token = CancellationToken::new();
     let child_token = token.child_token();
     let (tx, mut rx) = mpsc::channel(1);
