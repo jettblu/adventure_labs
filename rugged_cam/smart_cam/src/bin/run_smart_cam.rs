@@ -5,11 +5,11 @@ use motion_detection::{ MotionDetector, ParamsMotionDetector, MsgMotionDetector 
 use camera_capture::{ save_photo_to_file };
 use log::{ info, trace, warn, LevelFilter };
 
-// example call... 
-// cargo run -p smart_cam --bin run_smart_cam --oak 41_40338-2_17403
+// example call...
+// cargo run -p smart_cam --bin run_smart_cam --release oak 41_40338-2_17403
 #[tokio::main]
 async fn main() {
-    let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = std::env::args().collect();
     let radio_name = &args[1].to_string();
     // of format... 41_40338-2_17403
     let device_location = &args[2].to_string();
@@ -56,7 +56,16 @@ async fn main() {
             if msg.motion_detected {
                 if !motion_session_captured {
                     // to do... add error handling for photo capture
-                    let file_name = &*format!("radio/sending_dock/{msg.time}|{radio_name.clone()}|{device_location.clone()}.png");
+                    let msg_time = msg.time
+                        .duration_since(SystemTime::UNIX_EPOCH)
+                        .unwrap()
+                        .as_secs();
+                    let file_name = &*format!(
+                        "radio/loading_dock/{}|{}|{}.png",
+                        msg_time,
+                        radio_name.clone(),
+                        device_location.clone()
+                    );
                     save_photo_to_file(file_name);
                     // toggle capture indicator
                     motion_session_captured = true;
