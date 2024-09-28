@@ -133,8 +133,15 @@ sudo rm <file_name>
 
 **Logs**
 ```bash
+# restart health logs service 
+systemctl restart cam-health
+
 # enter rugged cam logs directory
 cd /etc/rugged_cam/logs
+
+# clear all logs in health directory
+sudo rm -r /etc/rugged_cam/logs/health/*
 ```
+
 
 
