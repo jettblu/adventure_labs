@@ -98,8 +98,7 @@ cargo run -p smart_cam --bin run_smart_cam  --release
 
 ```bash
 # file transfer
-git clone https://github.com/landandair/Meshtastic_File_Transfer.git
-python3 sender.py --p Files/image-file-compressed.webp # SENDER (from within radio/Meshtastic_File_transfer/Sender subdirectory)
+python3 sender.py --p file_examples/image-file-compressed.webp # SENDER (from within radio/Meshtastic_File_transfer/Sender subdirectory)
 python3 receiver.py  # SENDER (from within radio/Meshtastic_File_transfer/Receiver subdirectory)
 ```
 
