@@ -2,9 +2,11 @@ use tokio::sync::mpsc;
 use std::time::SystemTime;
 use tokio_util::sync::CancellationToken;
 use motion_detection::{ MotionDetector, ParamsMotionDetector, MsgMotionDetector };
+use log::{ info, trace, warn, LevelFilter };
 
 #[tokio::main]
 async fn main() {
+    let _ = simple_logging::log_to_file("logs/motion_detection/test.log", LevelFilter::Info);
     let token = CancellationToken::new();
     let child_token = token.child_token();
     let (tx, mut rx) = mpsc::channel(1);
@@ -18,9 +20,8 @@ async fn main() {
     tokio::spawn(async move {
         motion_detector.run().await;
     });
-    // safety hard cap on iterations
-    let max_iterations: u32 = 50;
-    let duration_cap_secs: u64 = 20;
+    // safety hard cap on run time
+    let duration_cap_secs: u64 = 60 * 120;
     let start_time: SystemTime = SystemTime::now();
     loop {
         let val: Option<MsgMotionDetector> = rx.recv().await;
@@ -32,15 +33,19 @@ async fn main() {
                 .duration_since(start_time.clone())
                 .expect("Invalid time operation")
                 .as_secs();
-            println!("Seconds since start: {}", time_since_start);
             if time_since_start > duration_cap_secs {
                 break;
             }
             // check detection result
             if msg.motion_detected {
-                println!("Motion detected");
+                // log detection to file
+                let now = SystemTime::now()
+                    .duration_since(SystemTime::UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs();
+                info!("{} {}", now, "motion detected");
             } else {
-                println!("No motion detected");
+                // pass for now
             }
         }
     }
