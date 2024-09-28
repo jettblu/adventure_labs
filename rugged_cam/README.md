@@ -15,6 +15,15 @@ sudo apt-get install -y libclang-dev
 
 ## Add Requirments 
 
+**Version Control**
+```bash
+# install git
+sudo apt-get install git
+# (optional) if pushing changes set user name and email
+git config --global user.name "<name>"
+git config --global user.email "<email>"
+```
+
 **Battery**
 Install pisugar battery application.
 ```bash
@@ -49,11 +58,13 @@ sudo apt install libdbus-1-dev pkg-config
 sudo apt update
 sudo apt install pipx
 pipx ensurepath # this adds pipx to path. will need to restart terminal for path changes to take effect.
+pipx install virtualenv
 ```
 
 Now in the rugged_cam/radio directory, run the followiung command. This creates a new virtual environment called env_radio.
 
 ```bash
+# in the radio subdirectory run
 virtualenv env_radio
 source env_radio/bin/activate #activates environment
 which python3 #(optional) to verify the environmenty has been activated
@@ -62,7 +73,7 @@ which python3 #(optional) to verify the environmenty has been activated
 Now let's install the required packages for communicating with our radio.
 
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 [Systemd with virtual environments example](https://gist.github.com/dunkelstern/5bfe7414fc0b7e8a9f6e1c4c78fd2543)
@@ -71,15 +82,25 @@ pip install requirements.txt
 # Run Examples
 
 ```bash
+# motion detection loop
 cargo run -p motion_detection --bin motion_detection_loop --release
 ```
 
 ```bash
+# camera capture... single snapshot
 cargo run -p camera_capture --bin snapshot --release
 ```
 
 ```bash
+# smart cam 
 cargo run -p smart_cam --bin run_smart_cam  --release
+```
+
+```bash
+# file transfer
+git clone https://github.com/landandair/Meshtastic_File_Transfer.git
+python3 sender.py --p Files/image-file-compressed.webp # SENDER (from within radio/Meshtastic_File_transfer/Sender subdirectory)
+python3 receiver.py  # SENDER (from within radio/Meshtastic_File_transfer/Receiver subdirectory)
 ```
 
 
@@ -110,6 +131,9 @@ sudo systemctl disable pisugar-server
 
 # enable service
 sudo systemctl enable pisugar-server
+
+#uninstall pisugar package
+sudo dpkg -P pisugar-server
 ```
 
 **Linux Automation**
