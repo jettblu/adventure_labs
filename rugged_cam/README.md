@@ -62,8 +62,7 @@ which python3 #(optional) to verify the environmenty has been activated
 Now let's install the required packages for communicating with our radio.
 
 ```bash
-pip install pytap2
-pip install meshtastic
+pip install requirements.txt
 ```
 
 [Systemd with virtual environments example](https://gist.github.com/dunkelstern/5bfe7414fc0b7e8a9f6e1c4c78fd2543)
