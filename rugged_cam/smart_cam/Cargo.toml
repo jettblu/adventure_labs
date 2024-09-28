@@ -10,3 +10,4 @@ tokio = {workspace=true}
 tokio-util = {workspace=true}
 # use workspace version of log
 log = {workspace=true}
+simple-logging = {workspace=true}

@@ -7,3 +7,5 @@ edition = "2021"
 rppal = "0.18.0"
 tokio = {workspace=true}
 tokio-util = {workspace=true}
+log = {workspace=true}
+simple-logging = {workspace=true}

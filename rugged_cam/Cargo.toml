@@ -5,7 +5,6 @@ members = [
     "camera_capture",
     "smart_cam",
     "battery",
-    "radio"
 ]
 
 [workspace.dependencies]
