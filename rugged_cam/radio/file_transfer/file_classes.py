@@ -18,7 +18,7 @@ class FileTransferReceiver:
         self.timeout = timeout + 10
         self.last_packet = time.time()
         self.progress_bar = tqdm.tqdm(total=num_packets, unit='packet', disable=disable_bar)
-        initial_ack = packaging_data.make_status_packet(file_id, 1)  # Make ack array
+        initial_ack = utils.packaging_data.make_status_packet(file_id, 1)  # Make ack array
         self.send_data(bytes(initial_ack))
         self.kill = False
         self.finished = False
@@ -61,10 +61,10 @@ class FileTransferReceiver:
                 print("requesting missing packets")
                 print(missing_packets)
                 print("----------")
-                ret_packet = packaging_data.make_status_packet(self.id, 3, opt_data=missing_packets)
+                ret_packet = utils.packaging_data.make_status_packet(self.id, 3, opt_data=missing_packets)
             else:  # Let it know all packets are received
                 print("Sending confirmation that all packets have been received")
-                ret_packet = packaging_data.make_status_packet(self.id, 4)
+                ret_packet = utils.packaging_data.make_status_packet(self.id, 4)
                 self.save_to_file()
                 self.kill = True
             self.send_data(ret_packet)
@@ -107,8 +107,8 @@ class FileTransferSender:
         self.destination_id = destination_id
         self.packet_queue = []
         self.packet_len = packet_len
-        data_dict = packaging_data.split_data(file_name, packet_len)  # Unlabeled
-        self.data_dict = packaging_data.package_data(data_dict, self.id) # Labeled
+        data_dict = utils.packaging_data.split_data(file_name, packet_len)  # Unlabeled
+        self.data_dict = utils.packaging_data.package_data(data_dict, self.id) # Labeled
         self.delay = send_delay
         self.packet_num = len(self.data_dict)
         self.last_send = time.time()
@@ -124,7 +124,7 @@ class FileTransferSender:
 
     def send_initial(self):
         # Sends initial packet
-        init_str = packaging_data.make_initial_req(self.name, len(self.data_dict), self.id)
+        init_str = utils.packaging_data.make_initial_req(self.name, len(self.data_dict), self.id)
         self.interface.sendText(init_str, destinationId=self.destination_id)
 
     def update(self):
@@ -162,12 +162,12 @@ class FileTransferSender:
         elif packet_type == 1:  # confirm initial requets
             for data in self.data_dict.values():
                 self.packet_queue.append(data)
-            self.packet_queue.append(packaging_data.make_status_packet(self.id, 2))
+            self.packet_queue.append(utils.packaging_data.make_status_packet(self.id, 2))
         elif packet_type == 3:  # get needed packets
             needed_packets = list(packet[6:])
             for num in needed_packets:
                 self.packet_queue.append(self.data_dict[num])
-            self.packet_queue.append(packaging_data.make_status_packet(self.id, 2))
+            self.packet_queue.append(utils.packaging_data.make_status_packet(self.id, 2))
             self.progress_bar.close()
             self.progress_bar = tqdm.tqdm(total=len(self.packet_queue), unit='packet', disable=self.disable_bar)
         else:
