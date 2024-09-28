@@ -5,9 +5,16 @@ use motion_detection::{ MotionDetector, ParamsMotionDetector, MsgMotionDetector 
 use camera_capture::{ save_photo_to_file };
 use log::{ info, trace, warn, LevelFilter };
 
+// example call... 
+// cargo run -p smart_cam --bin run_smart_cam --oak 41_40338-2_17403
 #[tokio::main]
 async fn main() {
+    let args: Vec<String> = env::args().collect();
+    let radio_name = &args[1].to_string();
+    // of format... 41_40338-2_17403
+    let device_location = &args[2].to_string();
     simple_logging::log_to_file("logs/smart_cam/test.log", LevelFilter::Info);
+
     info!("Smart cam program started");
     let token = CancellationToken::new();
     let child_token = token.child_token();
@@ -49,7 +56,7 @@ async fn main() {
             if msg.motion_detected {
                 if !motion_session_captured {
                     // to do... add error handling for photo capture
-                    let file_name = &*format!("smart_cam_test_output/{frame_count} frame.png");
+                    let file_name = &*format!("radio/sending_dock/{msg.time}|{radio_name.clone()}|{device_location.clone()}.png");
                     save_photo_to_file(file_name);
                     // toggle capture indicator
                     motion_session_captured = true;
