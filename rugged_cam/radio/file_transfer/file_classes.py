@@ -32,6 +32,7 @@ class FileTransferReceiver:
                 self.progress_bar.close()
                 self.kill = True
             else:
+                print("saving to file")
                 self.save_to_file()
                 self.kill = True
                 self.progress_bar.close()
@@ -78,6 +79,8 @@ class FileTransferReceiver:
         return missing_nums
 
     def save_to_file(self):
+        print("saving!!!")
+        print(self.name)
         check = self.get_missing_nums()
         if len(check) == 0 and not self.saved:
             self.progress_bar.close()
@@ -87,6 +90,7 @@ class FileTransferReceiver:
                     fi.write(self.packet_dict[num])
             self.finished = True
             self.saved = self.finished
+            print("returning true")
             return True
         return False
 
