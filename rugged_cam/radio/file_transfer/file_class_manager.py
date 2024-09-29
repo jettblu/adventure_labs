@@ -1,6 +1,6 @@
 import random
 import file_transfer.file_classes
-from utils.packaging_data import decode_initial_req
+from file_transfer.utils.packaging_data import decode_initial_req
 
 
 class FileTransManager:
@@ -56,7 +56,7 @@ class FileTransManager:
             print('Accepted')
         else:
             return
-        self.transfer_objects[f_id] = file_classes.FileTransferReceiver(file_name, f_id, num, self.interface,
+        self.transfer_objects[f_id] = file_transfer.file_classes.FileTransferReceiver(file_name, f_id, num, self.interface,
                                                                         sending_id, timeout=timeout)
 
     def send_new_file(self, file_name, destination):
@@ -65,7 +65,7 @@ class FileTransManager:
         while file_id == bytearray('f'.encode('utf8'))[0] or file_id in self.transfer_objects.keys():
             file_id = random.randint(0, 256)
         print(f'Sending {file_name}...')
-        self.transfer_objects[file_id] = file_classes.FileTransferSender(file_name, file_id, self.interface,
+        self.transfer_objects[file_id] = file_transfer.file_classes.FileTransferSender(file_name, file_id, self.interface,
                                                                          destination, self.send_delay, self.packet_len,
                                                                          disable_bar=False)
 
