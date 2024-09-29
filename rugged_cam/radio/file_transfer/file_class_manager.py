@@ -25,9 +25,12 @@ class FileTransManager:
         for key in deleted_keys:
             finished = self.transfer_objects.pop(key)
             if not finished.finished:
-                result = input('retry?(y/n)>>')
-                if 'y' in result.lower() or self.restart:
-                    self.file_list.insert(0, finished.name)
+                # TODO: maybe implement some sort of auto retry with max retry limit?
+                # TODO: maybe only retry/send if requested destination has been online w/in past time buffer
+                pass
+                # result = input('retry?(y/n)>>')
+                # if 'y' in result.lower() or self.restart:
+                #     self.file_list.insert(0, finished.name)
 
         if len(self.transfer_objects) == 0:
             if self.file_list:
