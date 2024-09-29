@@ -99,7 +99,9 @@ def on_receive(packet, interface): # called when a packet arrives
 
 def run_sender(interface, time_delay=3, use_dir=False, auto_restart=False, path='',  shortname_destination_radio='', max_send_time_secs=60*5):
     pub.subscribe(on_receive, "meshtastic.receive")
-    main(interface, time_delay, use_dir, auto_restart, path, shortname_destination_radio, max_send_time_secs)
+    result = main(interface, time_delay, use_dir, auto_restart, path, shortname_destination_radio, max_send_time_secs)
+    return result
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         prog='Meshtastic File Sender',
