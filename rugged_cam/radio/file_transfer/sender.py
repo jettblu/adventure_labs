@@ -6,7 +6,9 @@ Connect 2 Radios to the USB ports running meshtastic and then run the file. A pr
 """
 import os
 import sys
-sys.path.append('..')
+
+from data_types import ResultSender
+
 from serial.serialutil import SerialException
 import time
 from meshtastic.serial_interface import SerialInterface

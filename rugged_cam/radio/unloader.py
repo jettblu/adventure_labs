@@ -6,7 +6,7 @@ from serial import SerialException
 import file_transfer.sender
 from meshtastic.util import findPorts
 
-from file_transfer.types import ResultSender
+from file_transfer.data_types import ResultSender
 
 
 
