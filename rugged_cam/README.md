@@ -104,6 +104,7 @@ cargo run -p smart_cam --bin run_smart_cam  --release
 # file transfer examples
 python3 sender.py --path=file_transfer/file_examples/image-file-compressed.webp --shortname_destination_radio=palm # SENDER (from within radio subdirectory)
 python3 receiver.py  # SENDER (from within radio subdirectory)
+python3 unloader.py  # SENDER (from within radio subdirectory)
 ```
 
 ## Helpful Commands
