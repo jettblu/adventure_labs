@@ -63,11 +63,17 @@ async fn main() {
                         .as_secs();
                     let file_name = &*format!(
                         "radio/loading_dock/original/{}|{}|{}.png",
-                        msg_time,
+                        msg_time.clone(),
                         radio_name.clone(),
                         device_location.clone()
                     );
-                    save_photo_to_file(file_name, Some(FILE_COMPRESSED_DIR)).await;
+                    let file_name_compressed = format!(
+                        "{FILE_COMPRESSED_DIR}/{}|{}|{}.webp",
+                        msg_time.clone(),
+                        radio_name.clone(),
+                        device_location.clone()
+                    );
+                    save_photo_to_file(file_name, Some(file_name_compressed)).await;
                     // toggle capture indicator
                     motion_session_captured = true;
                     frame_count = frame_count + 1;

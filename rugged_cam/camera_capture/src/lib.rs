@@ -1,10 +1,9 @@
 use drm_fourcc::DrmFourcc;
 
-use image::RgbImage;
-use image::ColorType;
-use image::ImageBuffer;
-use image_compressor::compressor::Compressor;
-use image_compressor::Factor;
+// use image::RgbImage;
+// use image::ColorType;
+// use image::ImageBuffer;
+use image::*;
 
 use std::time::Duration;
 
@@ -19,10 +18,11 @@ use libcamera::{
     stream::StreamRole,
     geometry::Size,
 };
+use webp::*;
 
 const PIXEL_FORMAT_RGB888: PixelFormat = PixelFormat::new(DrmFourcc::Rgb888 as u32, 0);
 
-pub fn save_photo_to_file(filename: &str, filedir_compressed: Option<&str>) {
+pub fn save_photo_to_file(filename: &str, file_path_compressed: Option<&str>) {
     // Set size.
     let size = Size { width: 800, height: 600 };
 
@@ -121,11 +121,26 @@ pub fn save_photo_to_file(filename: &str, filedir_compressed: Option<&str>) {
     // Save the buffer to a PNG file.
     image::save_buffer(&filename, &img, size.width, size.height, ColorType::Rgb8).unwrap();
     // Save the buffer to a compressed PNG file.
-    if let Some(dest_dir) = filedir_compressed {
+    if let Some(file_path_compressed) = file_path_compressed {
+        let (w, h) = img.dimensions();
+        println!("w: {w} h: {h}");
+        // Optionally, resize the existing photo and convert back into DynamicImage
+        let size_factor = 1.0;
+        let img_dynamic: DynamicImage = DynamicImage::ImageRgb8(
+            imageops::resize(
+                &img,
+                ((w as f64) * size_factor) as u32,
+                ((h as f64) * size_factor) as u32,
+                imageops::FilterType::Triangle
+            )
+        );
         // compress the image to jpg
-        let mut compressor = Compressor::new(&img, &dest_dir);
-        compressor.set_factor(Factor::new(80.0, 0.8));
-        comp.compress_to_jpg();
+        // Create the WebP encoder for the above image
+        let encoder: Encoder = Encoder::from_image(&img_dynamic).unwrap();
+        // Encode the image at a specified quality 0-100
+        let webp: WebPMemory = encoder.encode(70f32);
+        // Define and write the WebP-encoded file to a given path
+        std::fs::write(&file_path_compressed, &*webp).unwrap();
     }
 
     println!("PNG file saved to {}", &filename);
