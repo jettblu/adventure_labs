@@ -1,1 +1,6 @@
 __pycache__/
+receiving_dock/*
+!receiving_dock/README.md
+loading_dock/*
+!loading_dock/compressed/README.md
+!loading_dock/original/README.md
