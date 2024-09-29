@@ -18,7 +18,7 @@ class FileTransferReceiver:
         self.timeout = timeout + 10
         self.last_packet = time.time()
         self.progress_bar = tqdm.tqdm(total=num_packets, unit='packet', disable=disable_bar)
-        initial_ack = file_transfer.file_transfer.utils.packaging_data.make_status_packet(file_id, 1)  # Make ack array
+        initial_ack = file_transfer.utils.packaging_data.make_status_packet(file_id, 1)  # Make ack array
         self.send_data(bytes(initial_ack))
         self.kill = False
         self.finished = False
