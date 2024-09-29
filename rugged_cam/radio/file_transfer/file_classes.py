@@ -87,11 +87,10 @@ class FileTransferReceiver:
             print(self.name)
             print("------")
             self.progress_bar.close()
-            os.makedirs(os.path.dirname(self.name), exist_ok=True)
             # get file_name from self.name
             file_name = self.name.split('/')[-1]
             # now save to unloading dock with incoming name
-            save_destination_path = f'unloading_dock/{file_name}'
+            save_destination_path = f'receiving_dock/{file_name}'
             with open(save_destination_path, 'wb') as fi:
                 for num in range(self.num_packets):
                     fi.write(self.packet_dict[num])
