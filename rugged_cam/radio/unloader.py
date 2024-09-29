@@ -6,7 +6,7 @@ from serial import SerialException
 import sender
 from meshtastic.util import findPorts
 
-from rugged_cam.radio.data_types import ResultSender
+from data_types import ResultSender
 
 
 
@@ -36,7 +36,8 @@ class Unloader:
             for port in ports:
                 try:
                     interface = SerialInterface(devPath=port)
-                    print(f'connected to {interface.getShortName()}')
+                    print(f'unloader connected to {interface.getShortName()}')
+                    self.interface = interface
                     break
                 except (BlockingIOError, SerialException) as e:
                     pass
@@ -58,13 +59,18 @@ class Unloader:
         # if no files to send, return
         if not self.files_to_send_queue:
             return ResultSender.NO_FILES
-        file_path = self.files_to_send_queue.pop(0)
+        file_name = self.files_to_send_queue.pop(0)
+        # join the path
+        file_path = os.path.join(LOADING_DOCK_PATH, file_name)
         if not os.path.exists(file_path):
             return ResultSender.FILE_NOT_FOUND
         # send the file
         print(f'Sending file: {file_path}')
         # send the file
         result_send = sender.run_sender(self.interface, path=file_path, shortname_destination_radio='palm')
+        if result_send == ResultSender.SUCCESS:
+            # remove the file from the loading dock
+            os.remove(file_path)
         return result_send
 
     def has_files_to_send(self):
