@@ -67,13 +67,13 @@ async fn main() {
                         radio_name.clone(),
                         device_location.clone()
                     );
-                    let file_name_compressed = format!(
+                    let file_name_compressed = &*format!(
                         "{FILE_COMPRESSED_DIR}/{}|{}|{}.webp",
                         msg_time.clone(),
                         radio_name.clone(),
                         device_location.clone()
                     );
-                    save_photo_to_file(file_name, Some(file_name_compressed)).await;
+                    save_photo_to_file(file_name, Some(file_name_compressed));
                     // toggle capture indicator
                     motion_session_captured = true;
                     frame_count = frame_count + 1;
