@@ -6,5 +6,5 @@ edition = "2021"
 [dependencies]
 libcamera = "0.2.3"
 drm-fourcc = "2.2"
-image = "0.24.7"
-image_compressor = "1.5.2"
+image = { version = "0.25.2"}
+webp = "0.3.0"
