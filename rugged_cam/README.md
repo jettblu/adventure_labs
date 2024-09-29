@@ -157,13 +157,16 @@ sudo cp <binary file path> /usr/bin/rugged_cam
 
 # remove file
 sudo rm <file_name>
+
+# measure file ize in kilobytes
+du -k <file_name>
 ```
 
 **Logs**
 
 ```bash
 # restart health logs service
-systemctl restart cam-health
+sudo systemctl restart cam-health
 
 # enter rugged cam logs directory
 cd /etc/rugged_cam/logs
