@@ -1,5 +1,5 @@
 import random
-import file_classes
+import file_transfer.file_classes
 from utils.packaging_data import decode_initial_req
 
 
