@@ -79,13 +79,20 @@ class FileTransferReceiver:
         return missing_nums
 
     def save_to_file(self):
-        print("saving!!!")
-        print(self.name)
+
         check = self.get_missing_nums()
         if len(check) == 0 and not self.saved:
+            print("------")
+            print("saving file with incoming name...")
+            print(self.name)
+            print("------")
             self.progress_bar.close()
             os.makedirs(os.path.dirname(self.name), exist_ok=True)
-            with open(self.name, 'wb') as fi:
+            # get file_name from self.name
+            file_name = self.name.split('/')[-1]
+            # now save to unloading dock with incoming name
+            save_destination_path = f'unloading_dock/{file_name}'
+            with open(save_destination_path, 'wb') as fi:
                 for num in range(self.num_packets):
                     fi.write(self.packet_dict[num])
             self.finished = True

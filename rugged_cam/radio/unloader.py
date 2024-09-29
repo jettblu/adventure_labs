@@ -3,10 +3,10 @@ import os
 import time
 from meshtastic.serial_interface import SerialInterface
 from serial import SerialException
-import file_transfer.sender
+import sender
 from meshtastic.util import findPorts
 
-from file_transfer.data_types import ResultSender
+from rugged_cam.radio.data_types import ResultSender
 
 
 
@@ -64,7 +64,7 @@ class Unloader:
         # send the file
         print(f'Sending file: {file_path}')
         # send the file
-        result_send = file_transfer.sender.run_sender(self.interface, path=file_path, shortname_destination_radio='palm')
+        result_send = sender.run_sender(self.interface, path=file_path, shortname_destination_radio='palm')
         return result_send
 
     def has_files_to_send(self):

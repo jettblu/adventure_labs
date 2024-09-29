@@ -12,7 +12,7 @@ from meshtastic.serial_interface import SerialInterface
 from meshtastic.util import findPorts
 from pubsub import pub
 import argparse
-from file_class_manager import FileTransManager
+from file_transfer.file_class_manager import FileTransManager
 Text_Queue = []
 Queue = []
 
