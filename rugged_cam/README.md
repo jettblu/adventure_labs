@@ -96,8 +96,8 @@ cargo run -p camera_capture --bin snapshot --release
 ```
 
 ```bash
-# smart cam
-cargo run -p smart_cam --bin run_smart_cam  --release
+# smart cam (swap oak and 41_40338-2_17403 with your device name and coordinates respectively)
+cargo run -p smart_cam --bin run_smart_cam --release oak 41_40338-2_17403
 ```
 
 ```bash
