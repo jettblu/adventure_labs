@@ -18,47 +18,50 @@ Text_Queue = []
 Queue = []
 
 
-def main(interface):
-    args = parser.parse_args()
+def main(interface, time_delay=3, use_dir=False, auto_restart=False, path='', shortname_destination_radio='', max_send_time_secs=60*5):
+    print(time_delay, use_dir, auto_restart, path, shortname_destination_radio, max_send_time_secs)
     # Args to be used
-    time_delay = int(args.time_delay)
-    use_dir = args.use_dir
-    auto_restart = args.auto_restart
+    time_delay = int(time_delay)
     size = 0
     paths = []
     if use_dir:
-        list_paths = os.listdir(args.path)
+        list_paths = os.listdir(path)
         for i, fname in enumerate(list_paths):
-            path = args.path + '/' + fname
+            path = path + '/' + fname
             if not fname.startswith('.') and os.path.isfile(path):
                 size += os.path.getsize(path)
                 paths.append(path)
 
     else:
-        paths = [args.path]
-        size += os.path.getsize(args.path)
+        paths = [path]
+        size += os.path.getsize(path)
     try:
         paths = sorted(paths)
         send_time = time_delay * size/232 * 1.1
         send_hrs = int(send_time // 60**2)
         send_mins = int(send_time - send_hrs*60**2)//60
         send_secs = round(send_time - send_hrs*60**2 - send_mins*60)
-        if 'n' in input(f'Transfer will take approx. {send_hrs}hrs {send_mins}mins {send_secs}s. \n'
-                        'Continue?(y/n)>>').lower():
-            raise KeyboardInterrupt
+        print(f'Transfer will take approx. {send_hrs}hrs {send_mins}mins {send_secs}s')
+        if send_time > max_send_time_secs:
+            sys.exit('Error: Estimated transfer time exceeds max send time, please increase the send delay or decrease the file size')
         manager = FileTransManager(interface, send_delay=time_delay, auto_restart=auto_restart)  # Sender
         # Selecting the destination(to be changed)
         print('Select the destination below')
         nodes = interface.nodes
         nodes.pop(interface.getMyNodeInfo()['user']['id'])
         keys = list(nodes.keys())
+        # for i, key in enumerate(keys):
+        #     print(f"{i+1}: {key} - {nodes[key]['user']['shortName']}")
+        # index = input('>>')
+        # get index by shortname
         for i, key in enumerate(keys):
-            print(f"{i+1}: {key} - {nodes[key]['user']['shortName']}")
-        index = input('>>')
+            if nodes[key]['user']['shortName'] == shortname_destination_radio:
+                index = i + 1
+                break
         selected = keys[int(index)-1]
         destination_id = selected
         # destination_id = interface_2.getMyNodeInfo()['user']['id']
-        print(f"Starting transfer of {args.path} to {nodes[selected]['user']['shortName']}")
+        print(f"Starting transfer of {path} to {nodes[selected]['user']['shortName']}")
         manager.send_new_files(paths, destination_id)
         looping = True
         while looping:
@@ -77,8 +80,10 @@ def main(interface):
             if len(manager.transfer_objects) == 0:
                 looping = False
         interface.close()
+        return ResultSender.SUCCESS
     except KeyboardInterrupt:
-        sys.exit('\nUser Interrupted')
+        return ResultSender.FAIL
+
 
 
 def on_receive(packet, interface): # called when a packet arrives
@@ -90,18 +95,24 @@ def on_receive(packet, interface): # called when a packet arrives
         Text_Queue.append((interface.getShortName(), packet))
 
 
+def run_sender(interface, time_delay=3, use_dir=False, auto_restart=False, path='',  shortname_destination_radio='', max_send_time_secs=60*5):
+    pub.subscribe(on_receive, "meshtastic.receive")
+    main(interface, time_delay, use_dir, auto_restart, path, shortname_destination_radio, max_send_time_secs)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         prog='Meshtastic File Sender',
         description='Sends a file or directory to another node running the receiver program',)
-    parser.add_argument('-t', '--time_delay', default=5, help='Time between sending packets')
+    parser.add_argument('-t', '--time_delay', default=3, help='Time between sending packets')
     parser.add_argument('-d', '--use_dir', default=False, help='Sends a directory of files instead')
     parser.add_argument('-r', '--auto_restart', default=False, help='Automatically restart transfer upon '
                                                                     'failure(good for large transfers)')
     parser.add_argument('-p', '--path', required=True, help='Path to find the file from(must be less than'
                                                             '59kb')
+    parser.add_argument('-m', '--max_send_tim_secs', default=60*5, help='Max time to send the file in seconds')
+    parser.add_argument('-s', '--shortname_destination_radio', required=True, help='Shortname of the destination radio')
     ports = findPorts(True)
-    print(f'Number of Radios: {len(ports)}')
+    if len(ports) > 1:
+        print('Multiple active serial ports found, connecting to the first valid radio...')
     interface = None
     if ports:
         for port in ports:
@@ -113,6 +124,8 @@ if __name__ == '__main__':
                 pass
     if interface:
         pub.subscribe(on_receive, "meshtastic.receive")
-        main(interface)
+        # get args from parser
+        args = parser.parse_args()
+        main(interface, args.time_delay, args.use_dir, args.auto_restart, args.path, args.shortname_destination_radio, args.max_send_tim_secs)
     else:
         sys.exit('Error: No Radio Available')
