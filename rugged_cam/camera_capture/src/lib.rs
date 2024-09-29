@@ -3,6 +3,8 @@ use drm_fourcc::DrmFourcc;
 use image::RgbImage;
 use image::ColorType;
 use image::ImageBuffer;
+use image_compressor::compressor::Compressor;
+use image_compressor::Factor;
 
 use std::time::Duration;
 
@@ -20,7 +22,7 @@ use libcamera::{
 
 const PIXEL_FORMAT_RGB888: PixelFormat = PixelFormat::new(DrmFourcc::Rgb888 as u32, 0);
 
-pub fn save_photo_to_file(filename: &str) {
+pub fn save_photo_to_file(filename: &str, filedir_compressed: Option<&str>) {
     // Set size.
     let size = Size { width: 800, height: 600 };
 
@@ -118,6 +120,13 @@ pub fn save_photo_to_file(filename: &str) {
 
     // Save the buffer to a PNG file.
     image::save_buffer(&filename, &img, size.width, size.height, ColorType::Rgb8).unwrap();
+    // Save the buffer to a compressed PNG file.
+    if let Some(dest_dir) = filedir_compressed {
+        // compress the image to jpg
+        let mut compressor = Compressor::new(&img, &dest_dir);
+        compressor.set_factor(Factor::new(80.0, 0.8));
+        comp.compress_to_jpg();
+    }
 
     println!("PNG file saved to {}", &filename);
 

@@ -2,13 +2,14 @@ use tokio::sync::mpsc;
 use std::time::SystemTime;
 use tokio_util::sync::CancellationToken;
 use motion_detection::{ MotionDetector, ParamsMotionDetector, MsgMotionDetector };
-use camera_capture::{ save_photo_to_file };
+use camera_capture::save_photo_to_file;
 use log::{ info, trace, warn, LevelFilter };
 
 // example call...
 // cargo run -p smart_cam --bin run_smart_cam --release oak 41_40338-2_17403
 #[tokio::main]
 async fn main() {
+    const FILE_COMPRESSED_DIR: &str = "radio/loading_dock/compressed";
     let args: Vec<String> = std::env::args().collect();
     let radio_name = &args[1].to_string();
     // of format... 41_40338-2_17403
@@ -61,12 +62,12 @@ async fn main() {
                         .unwrap()
                         .as_secs();
                     let file_name = &*format!(
-                        "radio/loading_dock/{}|{}|{}.png",
+                        "radio/loading_dock/original/{}|{}|{}.png",
                         msg_time,
                         radio_name.clone(),
                         device_location.clone()
                     );
-                    save_photo_to_file(file_name);
+                    save_photo_to_file(file_name, Some(FILE_COMPRESSED_DIR)).await;
                     // toggle capture indicator
                     motion_session_captured = true;
                     frame_count = frame_count + 1;
