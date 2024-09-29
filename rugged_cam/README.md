@@ -65,8 +65,8 @@ Now in the rugged_cam/radio directory, run the followiung command. This creates 
 
 ```bash
 # in the radio subdirectory run
-virtualenv env_radio
-source env_radio/bin/activate #activates environment
+virtualenv env_rugged_cam
+source env_rugged_cam/bin/activate #activates environment
 which python3 #(optional) to verify the environmenty has been activated
 ```
 
