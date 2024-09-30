@@ -17,7 +17,7 @@ async fn main() {
     // get max number of frames to capture
     let max_frame_count: u64 = args[3].parse().unwrap();
     let now = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
-    simple_logging::log_to_file("logs/smart_cam/{now}.log", LevelFilter::Info);
+    simple_logging::log_to_file(format!("logs/smart_cam/{now}.log"), LevelFilter::Info);
     info!("Smart cam program started");
     let token = CancellationToken::new();
     let child_token = token.child_token();
