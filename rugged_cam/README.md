@@ -75,6 +75,8 @@ Now let's install the required packages for communicating with our radio.
 
 ```bash
 pip install -r requirements.txt
+# only if base station
+pip install PyDrive==1.3.1
 ```
 
 [Systemd with virtual environments example](https://gist.github.com/dunkelstern/5bfe7414fc0b7e8a9f6e1c4c78fd2543)

@@ -8,3 +8,5 @@ logs/receiver/*
 !logs/receiver/README.md
 logs/unloader/*
 !logs/unloader/README.md
+client_secrets.json
+client_creds.txt

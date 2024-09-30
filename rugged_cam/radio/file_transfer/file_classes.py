@@ -1,6 +1,7 @@
 import os
 import time
 import file_transfer.utils.packaging_data
+from file_transfer.google_drive.upload import upload_file
 from meshtastic import portnums_pb2
 import tqdm
 import logging
@@ -81,7 +82,6 @@ class FileTransferReceiver:
         return missing_nums
 
     def save_to_file(self):
-
         check = self.get_missing_nums()
         if len(check) == 0 and not self.saved:
             self.progress_bar.close()
@@ -94,6 +94,16 @@ class FileTransferReceiver:
             with open(save_destination_path, 'wb') as fi:
                 for num in range(self.num_packets):
                     fi.write(self.packet_dict[num])
+            # now try saving to drive
+            try:
+                now = int(time.time())
+                self.logger.info(f'{now} attempting to upload file to google drive')
+                upload_file(save_destination_path)
+                now = int(time.time())
+                self.logger.info(f'{now} uploaded file to google drive')
+            except:
+                self.warning("unable to upload file to google drive")
+
             self.finished = True
             self.saved = self.finished
             return True
