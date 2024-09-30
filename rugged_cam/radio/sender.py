@@ -49,6 +49,9 @@ def main(interface, time_delay=3, use_dir=False, auto_restart=False, path='', sh
         if send_time > max_send_time_secs:
             now = time.time()
             logger.error(f'{now} Estimated transfer time exceeds max send time, please increase the send delay or decrease the file size')
+            # TODO: log file size in kb... maybe alternative to deleting?
+            logger.info(f'{now} Removing file with path {path}')
+            os.remove(path)
             sys.exit('Error: Estimated transfer time exceeds max send time, please increase the send delay or decrease the file size')
         manager = FileTransManager(interface, send_delay=time_delay, auto_restart=auto_restart)  # Sender
         # Selecting the destination(to be changed)

@@ -4,3 +4,7 @@ receiving_dock/*
 loading_dock/*
 !loading_dock/compressed/README.md
 !loading_dock/original/README.md
+logs/receiver/*
+!logs/receiver/README.md
+logs/unloader/*
+!logs/unloader/README.md

@@ -21,6 +21,7 @@ use libcamera::{
 use webp::*;
 
 const PIXEL_FORMAT_RGB888: PixelFormat = PixelFormat::new(DrmFourcc::Rgb888 as u32, 0);
+const COMPRESSION_PERCENTAGE: f32 = 20f32;
 
 pub fn save_photo_to_file(filename: &str, file_path_compressed: Option<&str>) {
     // Set size.
@@ -47,9 +48,13 @@ pub fn save_photo_to_file(filename: &str, file_path_compressed: Option<&str>) {
 
     // Validate the generated configuration.
     match cfgs.validate() {
-        CameraConfigurationStatus::Valid => println!("Camera configuration valid!"),
-        CameraConfigurationStatus::Adjusted =>
-            println!("Camera configuration was adjusted: {:#?}", cfgs),
+        CameraConfigurationStatus::Valid => {
+            // pass
+        }
+        CameraConfigurationStatus::Adjusted => {
+            // pass
+        }
+        // TODO: LOGG ERROR
         CameraConfigurationStatus::Invalid => panic!("Error validating camera configuration"),
     }
     cam.configure(&mut cfgs).expect("Unable to configure camera");
@@ -123,7 +128,6 @@ pub fn save_photo_to_file(filename: &str, file_path_compressed: Option<&str>) {
     // Save the buffer to a compressed PNG file.
     if let Some(file_path_compressed) = file_path_compressed {
         let (w, h) = img.dimensions();
-        println!("w: {w} h: {h}");
         // Optionally, resize the existing photo and convert back into DynamicImage
         let size_factor = 1.0;
         let img_dynamic: DynamicImage = DynamicImage::ImageRgb8(
@@ -138,7 +142,7 @@ pub fn save_photo_to_file(filename: &str, file_path_compressed: Option<&str>) {
         // Create the WebP encoder for the above image
         let encoder: Encoder = Encoder::from_image(&img_dynamic).unwrap();
         // Encode the image at a specified quality 0-100
-        let webp: WebPMemory = encoder.encode(70f32);
+        let webp: WebPMemory = encoder.encode(COMPRESSION_PERCENTAGE);
         // Define and write the WebP-encoded file to a given path
         std::fs::write(&file_path_compressed, &*webp).unwrap();
     }

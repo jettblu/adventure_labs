@@ -156,6 +156,13 @@ sudo rm <file_name>
 
 # measure file ize in kilobytes
 du -k <file_name>
+
+# stop smart cam service
+sudo systemctl stop smart-cam
+
+# restart services
+sudo systemctl start smart-cam
+sudo systemctl start unloader
 ```
 
 **Logs**
