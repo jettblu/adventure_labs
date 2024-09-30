@@ -1,0 +1,12 @@
+[Unit]
+Description=Receives files via meshtastic network. Saves files to output directory.
+Requires=smart-cam.service
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=10s
+ExecStart=/bin/bash -c 'cd /home/cam/code/adventure_labs/rugged_cam && source env_rugged_cam/bin/activate && cd radio && python3 unloader.py'
+
+[Install]
+WantedBy=multi-user.target
