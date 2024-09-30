@@ -6,7 +6,7 @@ use camera_capture::save_photo_to_file;
 use log::{ info, trace, warn, LevelFilter };
 
 // example call...
-// cargo run -p smart_cam --bin run_smart_cam --release oak 41_40338-2_17403
+// cargo run -p smart_cam --bin run_smart_cam --release oak 41_40338-2_17403 0
 #[tokio::main]
 async fn main() {
     const FILE_COMPRESSED_DIR: &str = "radio/loading_dock/compressed";
@@ -14,6 +14,8 @@ async fn main() {
     let radio_name = &args[1].to_string();
     // of format... 41_40338-2_17403
     let device_location = &args[2].to_string();
+    // get max number of frames to capture
+    let max_frame_count: u64 = args[3].parse().unwrap();
     simple_logging::log_to_file("logs/smart_cam/test.log", LevelFilter::Info);
 
     info!("Smart cam program started");
@@ -34,10 +36,11 @@ async fn main() {
     let start_time: SystemTime = SystemTime::now();
     let mut motion_session_captured: bool = false;
     let mut frame_count: u64 = 0;
-    // to do... add command line argument for max duration or infinite loop
-    let max_frame_count = 50;
     loop {
-        if frame_count >= max_frame_count {
+        // check if max frame count reached
+        // if max_frame_count is 0, then loop forever
+        // if so, break loop
+        if max_frame_count != 0 && frame_count >= max_frame_count {
             println!("Requested frame count achieved. Exiting loop...");
             break;
         }
