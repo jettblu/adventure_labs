@@ -38,15 +38,11 @@ bash pisugar-power-manager.sh -c release
 After finished, you can manage the battery by visiting http://<your raspberry ip>:8421 in your browser.
 
 **Logs**
-Navigate to root and create required directories.
+Create required directories.
 
 ```bash
-cd /etc
-sudo mkdir rugged_cam
-cd rugged_cam
-sudo mkdir logs
-cd logs
-mkdir health
+sudo mkdir -p /etc/rugged_cam/{logs,radio/{loading_dock/{compressed,original},receiving_dock}} /etc/rugged_cam/logs/health
+# radio directors
 ```
 
 **Meshtastic**
@@ -97,14 +93,14 @@ cargo run -p camera_capture --bin snapshot --release
 
 ```bash
 # smart cam (swap oak and 41_40338-2_17403 with your device name and coordinates respectively)
-cargo run -p smart_cam --bin run_smart_cam --release oak 41_40338-2_17403
+cargo run -p smart_cam --bin run_smart_cam --release oak 41_40338-2_17403 0
 ```
 
 ```bash
 # file transfer examples
 python3 sender.py --path=file_transfer/file_examples/image-file-compressed.webp --shortname_destination_radio=palm # SENDER (from within radio subdirectory)
-python3 receiver.py  # SENDER (from within radio subdirectory)
-python3 unloader.py  # SENDER (from within radio subdirectory)
+python3 receiver.py  # receiver (from within radio subdirectory)
+python3 unloader.py  # polls output image directory and sends new files (from within radio subdirectory)
 ```
 
 ## Helpful Commands
