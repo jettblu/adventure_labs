@@ -56,7 +56,11 @@ def main(interface, time_delay=3, use_dir=False, auto_restart=False, path='', sh
         manager = FileTransManager(interface, send_delay=time_delay, auto_restart=auto_restart)  # Sender
         # Selecting the destination(to be changed)
         nodes = interface.nodes
-        nodes.pop(interface.getMyNodeInfo()['user']['id'])
+        try:
+            nodes.pop(interface.getMyNodeInfo()['user']['id'])
+        except:
+            # pass... we may have already popped our own node id
+            pass
         keys = list(nodes.keys())
         # for i, key in enumerate(keys):
         #     print(f"{i+1}: {key} - {nodes[key]['user']['shortName']}")
@@ -87,7 +91,6 @@ def main(interface, time_delay=3, use_dir=False, auto_restart=False, path='', sh
 
             if len(manager.transfer_objects) == 0:
                 looping = False
-        interface.close()
         return ResultSender.SUCCESS
     except KeyboardInterrupt:
         return ResultSender.FAIL
