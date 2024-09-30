@@ -41,7 +41,6 @@ def main(interface):
             if Text_Queue:  # handle text data
                 name, packet = Text_Queue.pop(0)
                 text = packet['decoded']['text']
-                logger.info('received text packet')
                 if text[0:5] == '!fcom':
                     manager.new_req_packet(text, packet['fromId'], timeout=time_out)
         interface.close()

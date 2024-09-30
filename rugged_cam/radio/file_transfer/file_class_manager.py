@@ -1,7 +1,8 @@
 import random
 import file_transfer.file_classes
 from file_transfer.utils.packaging_data import decode_initial_req
-
+import logging
+import time
 
 class FileTransManager:
     def __init__(self, interface, send_delay=7, packet_len=232, destination=None, auto_restart=False):
@@ -13,6 +14,7 @@ class FileTransManager:
         self.destination = destination
         self.done = False
         self.restart = auto_restart
+        self.logger = logging.getLogger("receiverApp")
 
     def update_all(self):
         """Calls update method on each object"""
@@ -54,7 +56,8 @@ class FileTransManager:
         """Called to make new file_receiving packet based on a request packet"""
         file_name, f_id, num = decode_initial_req(initial_req)
         if self.restart:
-            print(f'Automatically Accepted {file_name} with a size of {round(num*self.packet_len / 1000, 2)}kb.')
+            now = int(time.time())
+            self.logger.info(f'{now} Automatically Accepted {file_name} with a size of {round(num*self.packet_len / 1000, 2)}kb.')
         elif 'y' in input(f'Receive {file_name} with an approx size of {round(num*self.packet_len/1000,2)}kb?(y/n)\n>>'):
             print('Accepted')
         else:

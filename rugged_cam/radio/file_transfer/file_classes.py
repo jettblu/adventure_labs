@@ -31,11 +31,11 @@ class FileTransferReceiver:
         # after timeout... we either have all of our packets (success) or we don't (failure)
         if time.time()-self.last_packet > self.timeout:
             if self.get_missing_nums():  # Try to see if all the packets somehow made it
-                self.logger.log(f'File Transfer "{self.name}" Failed')
+                self.logger.info(f'File Transfer "{self.name}" Failed')
                 self.progress_bar.close()
                 self.kill = True
             else:
-                self.logger.log(f'File Transfer "{self.name}" Failed')
+                self.logger.info(f'File Transfer "{self.name}" Failed')
                 self.save_to_file()
                 self.kill = True
                 self.progress_bar.close()
