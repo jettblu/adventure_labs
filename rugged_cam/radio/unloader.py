@@ -5,6 +5,7 @@ from meshtastic.serial_interface import SerialInterface
 from serial import SerialException
 import sender
 from meshtastic.util import findPorts
+import logging
 
 from data_types import ResultSender
 
