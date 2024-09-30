@@ -66,7 +66,7 @@ class FileTransferReceiver:
                 ret_packet = file_transfer.utils.packaging_data.make_status_packet(self.id, 3, opt_data=missing_packets)
             else:  # Let it know all packets are received
                 now = int(time.time())
-                self.logger.info(f'{now} requesting sending confirmation that all packets have been received')
+                self.logger.info(f'{now} sending confirmation that all packets have been received')
                 ret_packet = file_transfer.utils.packaging_data.make_status_packet(self.id, 4)
                 self.save_to_file()
                 self.kill = True
@@ -84,14 +84,13 @@ class FileTransferReceiver:
 
         check = self.get_missing_nums()
         if len(check) == 0 and not self.saved:
-
             self.progress_bar.close()
             # get file_name from self.name
             file_name = self.name.split('/')[-1]
             # now save to unloading dock with incoming name
             save_destination_path = f'receiving_dock/{file_name}'
             now = int(time.time())
-            self.logger.log(f'{now} saving file with incoming name {self.name} to {save_destination_path}')
+            self.logger.info(f'{now} saving file with incoming name {self.name} to {save_destination_path}')
             with open(save_destination_path, 'wb') as fi:
                 for num in range(self.num_packets):
                     fi.write(self.packet_dict[num])
