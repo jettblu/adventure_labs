@@ -16,8 +16,8 @@ async fn main() {
     let device_location = &args[2].to_string();
     // get max number of frames to capture
     let max_frame_count: u64 = args[3].parse().unwrap();
-    simple_logging::log_to_file("logs/smart_cam/test.log", LevelFilter::Info);
-
+    let now = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
+    simple_logging::log_to_file("logs/smart_cam/{now}.log", LevelFilter::Info);
     info!("Smart cam program started");
     let token = CancellationToken::new();
     let child_token = token.child_token();
@@ -76,15 +76,14 @@ async fn main() {
                         radio_name.clone(),
                         device_location.clone()
                     );
+                    info!("Motion detected. Taking photo.");
                     save_photo_to_file(file_name, Some(file_name_compressed));
                     // toggle capture indicator
                     motion_session_captured = true;
                     frame_count = frame_count + 1;
                 }
-                println!("Motion detected");
             } else {
                 motion_session_captured = false;
-                println!("No motion detected");
             }
         }
     }
