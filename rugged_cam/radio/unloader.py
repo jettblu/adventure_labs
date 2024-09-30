@@ -65,7 +65,8 @@ class Unloader:
         if not os.path.exists(file_path):
             return ResultSender.FILE_NOT_FOUND
         # send the file
-        print(f'Sending file: {file_path}')
+        now = int(time.time())
+        logger.info(f'{now} sending file: {file_path}')
         # send the file
         result_send = sender.run_sender(self.interface, path=file_path, shortname_destination_radio='palm')
         if result_send == ResultSender.SUCCESS:
@@ -79,6 +80,9 @@ class Unloader:
 
 
 if __name__ == '__main__':
+    logger = logging.getLogger("unloaderApp")
+    now = int(time.time())
+    logging.basicConfig(filename=f'logs/unloader/{now}.log', level=logging.INFO)
     # queue for files to send
     files_to_send_queue = []
     current_file_set = get_loading_dock_files()
@@ -88,14 +92,15 @@ if __name__ == '__main__':
         unloader.update_file_queue()
         if unloader.has_files_to_send():
             result_send = unloader.send_file()
+            now = int(time.time())
             if result_send == ResultSender.NO_FILES:
-                print('No files to send')
+                logger.warn(f'{now} no files to send')
             elif result_send == ResultSender.FILE_NOT_FOUND:
-                print('File not found')
+                logger.warn(f'{now} file not found when attempting to send')
             elif result_send == ResultSender.SUCCESS:
-                print('File sent successfully')
+                logger.info(f'{now} FILE SENT SUCCESSFULLY')
             elif result_send == ResultSender.FAIL:
-                print('File failed to send')
+                logger.error(f'{now} FAILED TO SEND FILE')
         time.sleep(5)
 
 

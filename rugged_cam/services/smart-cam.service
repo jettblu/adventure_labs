@@ -1,8 +1,8 @@
 [Unit]
-Description=cam-health
+Description=Takes photo upon motion.
 
 [Service]
-ExecStart=/home/cam/code/adventure_labs/rugged_cam/release_binaries/cam-health
+ExecStart=/home/cam/code/adventure_labs/rugged_cam/release_binaries/run_smart_cam oak 41_40338-2_17403 0
 
 Type=simple
 KillMode=process

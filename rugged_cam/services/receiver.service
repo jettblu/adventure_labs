@@ -1,0 +1,12 @@
+[Unit]
+Description=Receives files via meshtastic network. Saves files to output directory.
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=10s
+ExecStart=/bin/bash -c 'cd /home/station/code/adventure_labs/rugged_cam && source env_rugged_cam/bin/activate && cd radio && python3 receiver.py'
+WorkingDirectory=/home/station/code/adventure_labs/rugged_cam/radio
+
+[Install]
+WantedBy=multi-user.target

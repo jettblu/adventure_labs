@@ -3,6 +3,7 @@ import time
 import file_transfer.utils.packaging_data
 from meshtastic import portnums_pb2
 import tqdm
+import logging
 
 class FileTransferReceiver:
     """Class used to store and handle incoming file packets and should be created when the first request packet is
@@ -23,16 +24,17 @@ class FileTransferReceiver:
         self.kill = False
         self.finished = False
         self.saved = False
+        self.logger = logging.getLogger("receiverApp")
 
     def update(self):
         # after timeout... we either have all of our packets (success) or we don't (failure)
         if time.time()-self.last_packet > self.timeout:
             if self.get_missing_nums():  # Try to see if all the packets somehow made it
-                print(f'File Transfer "{self.name}" Failed')
+                self.logger.log(f'File Transfer "{self.name}" Failed')
                 self.progress_bar.close()
                 self.kill = True
             else:
-                print("saving to file")
+                self.logger.log(f'File Transfer "{self.name}" Failed')
                 self.save_to_file()
                 self.kill = True
                 self.progress_bar.close()
@@ -59,12 +61,12 @@ class FileTransferReceiver:
             missing_packets = self.get_missing_nums()
             if missing_packets:  # Ask for missing packets
                 # print(missing_packets)
-                print("requesting missing packets")
-                print(missing_packets)
-                print("----------")
+                now = int(time.time())
+                self.logger.info(f'{now} requesting {len(missing_packets)} missing packets')
                 ret_packet = file_transfer.utils.packaging_data.make_status_packet(self.id, 3, opt_data=missing_packets)
             else:  # Let it know all packets are received
-                print("Sending confirmation that all packets have been received")
+                now = int(time.time())
+                self.logger.info(f'{now} sending confirmation that all packets have been received')
                 ret_packet = file_transfer.utils.packaging_data.make_status_packet(self.id, 4)
                 self.save_to_file()
                 self.kill = True
@@ -82,21 +84,18 @@ class FileTransferReceiver:
 
         check = self.get_missing_nums()
         if len(check) == 0 and not self.saved:
-            print("------")
-            print("saving file with incoming name...")
-            print(self.name)
-            print("------")
             self.progress_bar.close()
             # get file_name from self.name
             file_name = self.name.split('/')[-1]
             # now save to unloading dock with incoming name
             save_destination_path = f'receiving_dock/{file_name}'
+            now = int(time.time())
+            self.logger.info(f'{now} saving file with incoming name {self.name} to {save_destination_path}')
             with open(save_destination_path, 'wb') as fi:
                 for num in range(self.num_packets):
                     fi.write(self.packet_dict[num])
             self.finished = True
             self.saved = self.finished
-            print("returning true")
             return True
         return False
 
@@ -131,6 +130,7 @@ class FileTransferSender:
         self.disable_bar = disable_bar
         self.progress_bar = tqdm.tqdm(total=len(data_dict)+1, unit='packet', disable=self.disable_bar)
         self.progress_bar.update()
+        self.logger = logging.getLogger("unloaderApp")
 
     def send_initial(self):
         # Sends initial packet
@@ -151,8 +151,9 @@ class FileTransferSender:
 
         elif time.time()-self.last_send >= self.delay*self.packet_num:
             # alive for too long with no response... end sender process
-            print(time.time() - self.last_send)
-            print('failed Send Timeout')
+            now = int(time.time())
+            self.logger.error(f'{now} failed Send Timeout')
+            self.logger.info(f'{now} time elapsed: time.time() - self.last_send')
 
             self.kill = True
 
@@ -167,7 +168,8 @@ class FileTransferSender:
         """
         packet_type = packet[5]
         if packet_type == 0:
-            print('Sending Denied')
+            now = int(time.time())
+            self.logger.error(f'{now} Sending denied')
             self.kill = True
         elif packet_type == 1:  # confirm initial requets
             for data in self.data_dict.values():
@@ -183,7 +185,8 @@ class FileTransferSender:
         else:
             # status num 2... transfer complete
             self.progress_bar.close()
-            print(f'Confirmed File Transfer #{self.id} Complete')
+            now = int(time.time())
+            self.logger.info(f'{now} Confirmed File Transfer #{self.id} Complete')
             self.finished = True
             self.kill = True
         self.last_send = time.time()

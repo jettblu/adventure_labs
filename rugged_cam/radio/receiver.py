@@ -13,6 +13,8 @@ from meshtastic.util import findPorts
 from pubsub import pub
 import argparse
 from file_transfer.file_class_manager import FileTransManager
+import logging
+import time 
 Text_Queue = []
 Queue = []
 
@@ -22,6 +24,8 @@ def main(interface):
     # Args to be used
     time_out = int(args.time_out)
     auto_accept = args.auto_accept
+    now = int(time.time())
+    logger.info(f'{now} Started receiver service')
     try:
         manager = FileTransManager(interface, auto_restart=auto_accept)  # Sender
         # Selecting the destination(to be changed)
@@ -37,7 +41,7 @@ def main(interface):
             if Text_Queue:  # handle text data
                 name, packet = Text_Queue.pop(0)
                 text = packet['decoded']['text']
-                print(f'Text Received: {text}')
+                logger.info('received text packet')
                 if text[0:5] == '!fcom':
                     manager.new_req_packet(text, packet['fromId'], timeout=time_out)
         interface.close()
@@ -55,19 +59,22 @@ def on_receive(packet, interface): # called when a packet arrives
 
 
 if __name__ == '__main__':
+    logger = logging.getLogger("receiverApp")
+    now = int(time.time())
+    logging.basicConfig(filename=f'logs/receiver/{now}.log', level=logging.INFO)
     parser = argparse.ArgumentParser(
         prog='Meshtastic File Receiver',
         description='Reveives a file or directory to another node running the receiver program',)
     parser.add_argument('-t', '--time_out', default=300, help='Time between packets before giving up')
     parser.add_argument('-a', '--auto_accept', default=True, help='Automatically accepts file transfers')
     ports = findPorts(True)
-    print(f'Number of Radios: {len(ports)}')
+    logger.info(f'{len(ports)} radios available on local machine')
     interface = None
     if ports:
         for port in ports:
             try:
                 interface = SerialInterface(devPath=port)
-                print(f'connected to {interface.getShortName()}')
+                logger.info(f'connected to {interface.getShortName()}')
                 break
             except (BlockingIOError, SerialException) as e:
                 pass

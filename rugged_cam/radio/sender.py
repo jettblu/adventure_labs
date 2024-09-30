@@ -16,12 +16,13 @@ from meshtastic.util import findPorts
 from pubsub import pub
 import argparse
 from file_transfer.file_class_manager import FileTransManager
+import logging
 Text_Queue = []
 Queue = []
 
 
 def main(interface, time_delay=3, use_dir=False, auto_restart=False, path='', shortname_destination_radio='', max_send_time_secs=60*5):
-    print(time_delay, use_dir, auto_restart, path, shortname_destination_radio, max_send_time_secs)
+    logger = logging.getLogger("unloaderApp")
     # Args to be used
     time_delay = int(time_delay)
     size = 0
@@ -43,12 +44,14 @@ def main(interface, time_delay=3, use_dir=False, auto_restart=False, path='', sh
         send_hrs = int(send_time // 60**2)
         send_mins = int(send_time - send_hrs*60**2)//60
         send_secs = round(send_time - send_hrs*60**2 - send_mins*60)
-        print(f'Transfer will take approx. {send_hrs}hrs {send_mins}mins {send_secs}s')
+        now = time.time()
+        logger.info(f'{now} Transfer will take approx. {send_hrs}hrs {send_mins}mins {send_secs}s')
         if send_time > max_send_time_secs:
+            now = time.time()
+            logger.error(f'{now} Estimated transfer time exceeds max send time, please increase the send delay or decrease the file size')
             sys.exit('Error: Estimated transfer time exceeds max send time, please increase the send delay or decrease the file size')
         manager = FileTransManager(interface, send_delay=time_delay, auto_restart=auto_restart)  # Sender
         # Selecting the destination(to be changed)
-        print('Select the destination below')
         nodes = interface.nodes
         nodes.pop(interface.getMyNodeInfo()['user']['id'])
         keys = list(nodes.keys())
@@ -63,7 +66,8 @@ def main(interface, time_delay=3, use_dir=False, auto_restart=False, path='', sh
         selected = keys[int(index)-1]
         destination_id = selected
         # destination_id = interface_2.getMyNodeInfo()['user']['id']
-        print(f"Starting transfer of {path} to {nodes[selected]['user']['shortName']}")
+        now = time.time()
+        logger.info(f"{now} Starting transfer of {path} to {nodes[selected]['user']['shortName']}")
         manager.send_new_files(paths, destination_id)
         looping = True
         while looping:
@@ -77,7 +81,6 @@ def main(interface, time_delay=3, use_dir=False, auto_restart=False, path='', sh
             if Text_Queue:  # handle text data
                 name, packet = Text_Queue.pop(0)
                 text = packet['decoded']['text']
-                print(f'Text Received: {text}')
 
             if len(manager.transfer_objects) == 0:
                 looping = False
