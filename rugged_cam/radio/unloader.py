@@ -60,6 +60,8 @@ class Unloader:
         # if no files to send, return
         if not self.files_to_send_queue:
             return ResultSender.NO_FILES
+        if self.interface is None:
+            return ResultSender.NO_INTERFACE
         file_name = self.files_to_send_queue.pop(0)
         # join the path
         file_path = os.path.join(LOADING_DOCK_PATH, file_name)
@@ -78,6 +80,19 @@ class Unloader:
     def has_files_to_send(self):
         # check if queue is empty
         return len(self.files_to_send_queue) > 0
+    
+    def get_interface(self):
+        ports = findPorts(True)
+        interface = None
+        if ports:
+            for port in ports:
+                try:
+                    interface = SerialInterface(devPath=port)
+                    self.interface = interface
+                    break
+                except (BlockingIOError, SerialException) as e:
+                    pass
+
 
 
 if __name__ == '__main__':
@@ -92,14 +107,17 @@ if __name__ == '__main__':
     while True:
         unloader.update_file_queue()
         if unloader.has_files_to_send():
+            # unloader.get_interface()
             result_send = unloader.send_file()
             now = int(time.time())
             if result_send == ResultSender.NO_FILES:
-                logger.warn(f'{now} no files to send')
+                logger.warning(f'{now} no files to send')
             elif result_send == ResultSender.FILE_NOT_FOUND:
-                logger.warn(f'{now} file not found when attempting to send')
+                logger.warning(f'{now} file not found when attempting to send')
             elif result_send == ResultSender.SUCCESS:
                 logger.info(f'{now} FILE SENT SUCCESSFULLY')
+            elif result_send == ResultSender.NO_INTERFACE:
+                logger.warning("{now} No interface available when attempting to send")
             elif result_send == ResultSender.FAIL:
                 logger.error(f'{now} FAILED TO SEND FILE')
         time.sleep(5)

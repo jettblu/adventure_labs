@@ -5,4 +5,5 @@ class ResultSender(Enum):
     SUCCESS = 1
     FAIL = 2
     NO_FILES = 3
-    FILE_NOT_FOUND = 4
+    FILE_NOT_FOUND = 4,
+    NO_INTERFACE=5
