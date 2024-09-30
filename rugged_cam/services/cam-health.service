@@ -2,13 +2,13 @@
 Description=cam-health
 
 [Service]
-ExecStart=/usr/bin/rugged_cam/cam-health
+ExecStart=/home/cam/code/adventure_labs/rugged_cam/release_binaries/cam-health
 
 Type=simple
 KillMode=process
 Restart=on-failure
 RestartSec=10s
-WorkingDirectory=/etc/rugged_cam
+WorkingDirectory=/home/cam/code/adventure_labs/rugged_cam
 
 [Install]
 WantedBy=multi-user.target
