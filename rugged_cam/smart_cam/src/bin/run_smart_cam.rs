@@ -76,7 +76,11 @@ async fn main() {
                         radio_name.clone(),
                         device_location.clone()
                     );
-                    info!("Motion detected. Taking photo.");
+                    let now = SystemTime::now()
+                        .duration_since(SystemTime::UNIX_EPOCH)
+                        .unwrap()
+                        .as_secs();
+                    info!("{} Motion detected. Taking photo.", now);
                     save_photo_to_file(file_name, Some(file_name_compressed));
                     // toggle capture indicator
                     motion_session_captured = true;
