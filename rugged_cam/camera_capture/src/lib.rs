@@ -30,7 +30,7 @@ pub fn save_photo_to_file(filename: &str, file_path_compressed: Option<&str>) {
     let mgr = CameraManager::new().unwrap();
     let cameras = mgr.cameras();
     let cam = cameras.get(0).expect("No cameras found");
-    println!("Using camera: {}", *cam.properties().get::<properties::Model>().unwrap());
+    // println!("Using camera: {}", *cam.properties().get::<properties::Model>().unwrap());
 
     // Acquire the camera.
     let mut cam = cam.acquire().expect("Unable to acquire camera");
@@ -43,7 +43,7 @@ pub fn save_photo_to_file(filename: &str, file_path_compressed: Option<&str>) {
     cfgs.get_mut(0).unwrap().set_size(size);
 
     // Print the generated configuration.
-    println!("Generated config: {:#?}", cfgs);
+    // println!("Generated config: {:#?}", cfgs);
 
     // Validate the generated configuration.
     match cfgs.validate() {
@@ -62,7 +62,7 @@ pub fn save_photo_to_file(filename: &str, file_path_compressed: Option<&str>) {
         .stream()
         .expect("Failed to get stream");
     let buffers = alloc.alloc(&stream).expect("Failed to allocate buffers");
-    println!("Allocated {} buffers", buffers.len());
+    // println!("Allocated {} buffers", buffers.len());
 
     // Convert FrameBuffer to MemoryMappedFrameBuffer, which allows reading &[u8]
     let buffers = buffers
@@ -90,17 +90,17 @@ pub fn save_photo_to_file(filename: &str, file_path_compressed: Option<&str>) {
     cam.start(None).expect("Failed to start camera");
     cam.queue_request(reqs.pop().expect("Failed to pop request")).expect("Failed to queue request");
 
-    println!("Waiting for camera request execution");
+    // println!("Waiting for camera request execution");
     let req = rx.recv_timeout(Duration::from_secs(2)).expect("Camera request failed");
 
-    println!("Camera request {:?} completed!", req);
-    println!("Metadata: {:#?}", req.metadata());
+    // println!("Camera request {:?} completed!", req);
+    // println!("Metadata: {:#?}", req.metadata());
 
     // Retrieve and process the framebuffer data from the completed request.
     let framebuffer: &MemoryMappedFrameBuffer<FrameBuffer> = req
         .buffer(&stream)
         .expect("Failed to get framebuffer");
-    println!("FrameBuffer metadata: {:#?}", framebuffer.metadata());
+    // println!("FrameBuffer metadata: {:#?}", framebuffer.metadata());
 
     // RGB data is interleaved as a single plane.
     let planes = framebuffer.data();
@@ -143,7 +143,7 @@ pub fn save_photo_to_file(filename: &str, file_path_compressed: Option<&str>) {
         std::fs::write(&file_path_compressed, &*webp).unwrap();
     }
 
-    println!("PNG file saved to {}", &filename);
+    // println!("PNG file saved to {}", &filename);
 
     // Everything is cleaned up automatically by Drop implementations.
 }
