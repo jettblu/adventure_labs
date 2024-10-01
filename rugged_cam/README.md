@@ -38,11 +38,25 @@ bash pisugar-power-manager.sh -c release
 After finished, you can manage the battery by visiting http://<your raspberry ip>:8421 in your browser.
 
 **Logs**
-Create required directories.
+Create required directories. _No longer required as of 9-30-24._
 
 ```bash
 sudo mkdir -p /etc/rugged_cam/{logs,radio/{loading_dock/{compressed,original},receiving_dock}} /etc/rugged_cam/logs/health
 # radio directors
+```
+
+**Add any additional wifi networks**
+
+```bash
+# add networks with below ui
+sudo nmtui
+# view connection priority
+nmcli -f autoconnect-priority,name c
+# now adjust priority
+sudo nmcli connection modify "preconfigured" connection.autoconnect-priority 10
+sudo nmcli connection modify "post" connection.autoconnect-priority 9
+sudo nmcli connection modify "tbone_hotspot" connection.autoconnect-priority 8
+sudo nmcli connection modify "tbone_cabin" connection.autoconnect-priority 7
 ```
 
 **Meshtastic**
