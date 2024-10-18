@@ -9,11 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "#5f975b",
+        secondary: "#73a9cd", // #E3FF70
+        tertiary: "#f3af4a",
+        quaternary: "#fdfbfc",
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };
 export default config;
