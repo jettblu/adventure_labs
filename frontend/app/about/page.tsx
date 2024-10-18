@@ -38,7 +38,7 @@ export default function TeamPage() {
         </div>
       </div>
 
-      <div className="lg:w-1/2 grid grid-cols-1 gap-4 max-h-[100vh] overflow-auto px-2">
+      <div className="lg:w-1/2 grid grid-cols-1 gap-4 lg:max-h-[100vh] lg:overflow-auto px-2">
         <div className="max-w-2xl bg-white p-2 rounded-md w-fit mx-auto hover:bg-quaternary/80 duration-500 transition-colors group lg:mt-24">
           <p className="text-black text-md text-gray-500 ">President</p>
           <Image
