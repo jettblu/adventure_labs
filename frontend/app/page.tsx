@@ -6,8 +6,8 @@ export default function Home() {
           <h1 className="text-4xl lg:text-7xl font-bold text-center pt-[34vh]">
             Adventure Labs
           </h1>
-          <p className="text-2xl text-center">
-            Keeping a pulse on Earth's heartbeat.
+          <p className="lg:text-2xl text-center text-sm">
+            Keeping a pulse on Earth's heartbeat
           </p>
         </div>
       </div>
