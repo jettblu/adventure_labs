@@ -6,7 +6,7 @@ export default function TeamPage() {
       <div className="lg:w-1/2 h-full bg-gradient-to-r from-primary/10 to-tertiary/10 p-8 lg:border-r border-white pt-24 min-h-[100vh]">
         <h1 className="text-4xl text-left font-bold">Our Story</h1>
         <p className="text-lg text-left text-gray-500">
-          It all begins with adventure.
+          It all begins with adventure
         </p>
         <div className="prose text-gray-100 text-xl text-left">
           <p className="">
